@@ -6,7 +6,7 @@
 #define min(x, y) ((x) < (y) ? (x) : (y))
 
 /* Bit operations. */
-#define BIT_SET(b, i, x) b = ((b) & ~(1ULL << (i))) | ((x) << (i))
+#define BIT_SET(b, i, x) b = ((b) & ~(1ULL << (i))) | (((unsigned long long int) (x)) << (i))
 #define BIT_GET(b, i) ((b) >> (i)) & 1ULL
 
 /* Out of bounds. */
@@ -45,7 +45,6 @@ bool bitvec_set(bitvec_t *B, size_t i, bool x) {
 }
 bool bitvec_get(bitvec_t *B, size_t i, bool *x) {
   size_t b = i/64, j = i%64;
-  printf("%lu %lu %lu\n", i, b, j);
   if (OOB(B, i, b)) return false;
   *x = BIT_GET(B->d[b], j);
   return true;
@@ -67,16 +66,12 @@ bool bitvec_push(bitvec_t *B, bool x) {
   size_t b = i/64, j = i%64;
   if (B->n % 64 == 63) if (!bitvec_grow(B)) return false;
   ++B->n;
-  printf("> %lu %lu %lu %d\n", i, j, b, x);
-  bitvec_print(B);
   BIT_SET(B->d[b], j, x);
-  bitvec_print(B);
   return true;
 }
 bool bitvec_pop(bitvec_t *B, bool *x) {
-  size_t i = B->n;
+  size_t i = --B->n;
   size_t b = i/64, j = i%64;
-  --B->n;
   if (!x) return true;
   *x = BIT_GET(B->d[b], j);
   return true;
