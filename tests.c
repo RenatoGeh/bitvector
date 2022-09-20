@@ -56,6 +56,24 @@ bool test_bitvec(void) {
     }
     putchar('.');
 
+    for (j = 0; j < 1000; ++j) {
+      size_t p = rand() % A.n, q = rand() % B->n;
+      bool x = rand() % 2, y = rand() % 2;
+
+      assert(bitvec_GET(&A, p) == A_t[p]);
+      assert(bitvec_GET(B, q) == B_t[q]);
+
+      bitvec_SET(&A, p, x);
+      bitvec_SET(B, q, y);
+
+      assert(bitvec_GET(&A, p) == x);
+      assert(bitvec_GET(B, q) == y);
+
+      A_t[p] = x;
+      B_t[q] = y;
+    }
+    putchar('.');
+
     for (j = 0; j < TEST_LEN; ++j) {
       bool a, b;
 

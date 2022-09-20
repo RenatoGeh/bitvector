@@ -50,6 +50,15 @@ bool bitvec_get(bitvec_t *B, size_t i, bool *x) {
   return true;
 }
 
+void bitvec_SET(bitvec_t *B, size_t i, bool x) {
+  register size_t b = i/64, j = i%64;
+  BIT_SET(B->d[b], j, x);
+}
+bool bitvec_GET(bitvec_t *B, size_t i) {
+  register size_t b = i/64, j = i%64;
+  return BIT_GET(B->d[b], j);
+}
+
 #define MAGIC_ADD_LEN 2
 
 bool bitvec_grow(bitvec_t *B) {

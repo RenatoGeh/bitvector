@@ -27,9 +27,15 @@ void bitvec_free(bitvec_t *B);
 
 /* Sets the i-th position of bitvec_t B to x. Returns true if successful, false otherwise. */
 bool bitvec_set(bitvec_t *B, size_t i, bool x);
-/* Retrieves the value of the i-th position of bitvec_t B, setting its value to x. Returns true if
- * successful, false otherwise. */
+/* Retrieves the value of the i-th position of bitvec_t B. Returns true if successful, false
+ * otherwise. */
 bool bitvec_get(bitvec_t *B, size_t i, bool *x);
+
+/* Sets the i-th position of bitvec_t B to x without checking for out-of-bounds. Use with care. */
+void bitvec_SET(bitvec_t *B, size_t i, bool x);
+/* Retrieves the value of the i-th position of bitvec_t B without checking for out-of-bounds. Use
+ * with care. */
+bool bitvec_GET(bitvec_t *B, size_t i);
 
 /* Appends value x to bitvec_t B's tail. */
 bool bitvec_push(bitvec_t *B, bool x);
