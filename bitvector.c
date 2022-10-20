@@ -34,6 +34,28 @@ bitvec_t* bitvec_create(size_t n) {
   return B;
 }
 
+bitvec_t* bitvec_copy(bitvec_t *src, bitvec_t *dst) {
+  size_t i;
+  if (!dst) {
+    dst = (bitvec_t*) malloc(sizeof(bitvec_t));
+    if (!dst) goto error;
+    dst->d = (ull_t*) malloc(src->c*sizeof(ull_t));
+    if (!dst->d) { free(dst); goto error; }
+    dst->c = src->c;
+  } else if (dst->c < src->c) {
+    ull_t *p;
+    p = (ull_t*) realloc(src->d, src->c*sizeof(ull_t));
+      if (!p) goto error;
+    dst->d = p;
+    dst->c = src->c;
+  }
+  dst->n = src->n;
+  for (i = 0; i < src->c; ++i) dst->d[i] = src->d[i];
+  return dst;
+error:
+  return NULL;
+}
+
 void bitvec_free_contents(bitvec_t *B) { free(B->d); }
 void bitvec_free(bitvec_t *B) { bitvec_free_contents(B); free(B); }
 

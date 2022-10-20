@@ -19,6 +19,9 @@ typedef struct bitvec {
 bool bitvec_init(bitvec_t *B, size_t n);
 /* Creates and returns a new (dynamically allocated) bitvec_t containing at least n elements. */
 bitvec_t* bitvec_create(size_t n);
+/* Copies bitvec_t src to bitvec_t dst. If dst is NULL, then a new copy is dynamically allocated
+ * and returned. */
+bitvec_t* bitvec_copy(bitvec_t *src, bitvec_t *dst);
 
 /* Frees the contents of a bitvec_t. */
 void bitvec_free_contents(bitvec_t *B);

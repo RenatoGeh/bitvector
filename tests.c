@@ -5,8 +5,16 @@
 #define TEST_LEN 1000
 #define assert(x) if (!x) return false
 
+bool cmp_bitvec(bitvec_t *A, bitvec_t *B) {
+  size_t i;
+  if (A->c < (1u << A->n) || B->c < (1u << B->n)) return false;
+  if (A->n != B->n) return false;
+  for (i = 0; i < A->c; ++i) if (A->d[i] != B->d[i]) return false;
+  return true;
+}
+
 bool test_bitvec(void) {
-  bitvec_t A = {0}, *B = NULL;
+  bitvec_t A = {0}, *B = NULL, *C = NULL, D = {0};
   bool A_t[TEST_LEN] = {0}, B_t[TEST_LEN] = {0};
   size_t i, j;
 
@@ -84,6 +92,12 @@ bool test_bitvec(void) {
       assert(b == B_t[TEST_LEN-j-1]);
     }
     putchar('.');
+
+    C = bitvec_copy(&A, C);
+    assert(C);
+    assert(cmp_bitvec(&A, C));
+    assert(bitvec_copy(B, &D));
+    assert(cmp_bitvec(B, &D));
 
     bitvec_free_contents(&A);
     bitvec_free(B);
