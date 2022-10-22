@@ -23,6 +23,13 @@ bitvec_t* bitvec_create(size_t n);
  * and returned. */
 bitvec_t* bitvec_copy(bitvec_t *src, bitvec_t *dst);
 
+/* Sets all elements (up to capacity) to zero. */
+bitvec_t* bitvec_zero(bitvec_t *B);
+/* Sets all elements (up to capacity) to one. */
+bitvec_t* bitvec_one(bitvec_t *B);
+/* Fills the number of elements up to capacity. */
+bitvec_t* bitvec_fill(bitvec_t *B);
+
 /* Frees the contents of a bitvec_t. */
 void bitvec_free_contents(bitvec_t *B);
 /* Frees bitvec_t and its contents. */
@@ -47,6 +54,10 @@ bool bitvec_pop(bitvec_t *B, bool *x);
 
 /* Prints a representation of bitvec_t B. */
 void bitvec_print(bitvec_t *B);
+
+/* Interprets bitvec_t* B as one long number, incrementing B in a segmented little-endian fashion.
+ * Returns false on overflow. */
+bool bitvec_incr(const bitvec_t *B);
 
 #ifdef __cplusplus
 }

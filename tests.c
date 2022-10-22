@@ -2,15 +2,19 @@
 
 #include "bitvector.h"
 
+#define ULL_BIT_SIZE 64
 #define TEST_LEN 1000
-#define assert(x) if (!x) return false
+#define assert(x) if (!(x)) return false
 
-bool cmp_bitvec(bitvec_t *A, bitvec_t *B) {
+int cmp_bitvec(bitvec_t *A, bitvec_t *B) {
   size_t i;
-  if (A->c < (1u << A->n) || B->c < (1u << B->n)) return false;
-  if (A->n != B->n) return false;
-  for (i = 0; i < A->c; ++i) if (A->d[i] != B->d[i]) return false;
-  return true;
+  if (((1u << A->c) < A->n) || ((1u << B->c) < B->n)) return A->c - B->c;
+  if (A->n != B->n) return A->n - B->n;
+  for (i = 0; i <= (A->n / ULL_BIT_SIZE); ++i) {
+    if (A->d[i] > B->d[i]) return 1;
+    else if (A->d[i] < B->d[i]) return -1;
+  }
+  return 0;
 }
 
 bool test_bitvec(void) {
@@ -62,7 +66,7 @@ bool test_bitvec(void) {
       A_t[p] = x;
       B_t[q] = y;
     }
-    putchar('.');
+    putchar('*');
 
     for (j = 0; j < 1000; ++j) {
       size_t p = rand() % A.n, q = rand() % B->n;
@@ -80,7 +84,25 @@ bool test_bitvec(void) {
       A_t[p] = x;
       B_t[q] = y;
     }
-    putchar('.');
+    putchar('-');
+
+    C = bitvec_copy(&A, C);
+    assert(C);
+    assert(!cmp_bitvec(&A, C));
+    assert(bitvec_copy(B, &D));
+    assert(!cmp_bitvec(B, &D));
+    assert(bitvec_copy(B, C));
+    assert(!cmp_bitvec(B, C));
+
+    for (j = 0; j < 10000; ++j) {
+      assert(bitvec_incr(C));
+      assert(cmp_bitvec(C, &D) > 0);
+      assert(cmp_bitvec(&D, C) < 0);
+      assert(bitvec_incr(&D));
+      assert(!cmp_bitvec(C, &D));
+      assert(bitvec_copy(C, &D));
+    }
+    putchar(',');
 
     for (j = 0; j < TEST_LEN; ++j) {
       bool a, b;
@@ -91,18 +113,24 @@ bool test_bitvec(void) {
       assert(a == A_t[TEST_LEN-j-1]);
       assert(b == B_t[TEST_LEN-j-1]);
     }
-    putchar('.');
-
-    C = bitvec_copy(&A, C);
-    assert(C);
-    assert(cmp_bitvec(&A, C));
-    assert(bitvec_copy(B, &D));
-    assert(cmp_bitvec(B, &D));
+    putchar('@');
 
     bitvec_free_contents(&A);
+    bitvec_free_contents(&D);
     bitvec_free(B);
-    B = NULL;
+    bitvec_free(C);
+    B = C = NULL;
   }
+
+  assert(bitvec_init(&A, 1000));
+  assert(bitvec_one(&A));
+  A.d[15] = 0;
+  /* putchar('\n'); */
+  for (i = 0; i < 10; ++i) {
+    /* bitvec_print(&A); */
+    bitvec_incr(&A);
+  }
+  bitvec_free_contents(&A);
 
   return true;
 }
