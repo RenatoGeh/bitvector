@@ -9,7 +9,8 @@
 
 /* Bit operations. */
 #define BIT_SET(b, i, x) b = ((b) & ~(1ULL << (i))) | (((unsigned long long int) (x)) << (i))
-#define BIT_GET(b, i) ((b) >> (i)) & 1ULL
+#define BIT_GET(b, i) (((b) >> (i)) & 1ULL)
+#define ONES_UP_TO(i) (~0ULL >> (ULL_BIT_SIZE-(i)))
 
 /* Out of bounds. */
 #define OOB(B, i,  b) (((i) >= (B)->n) || ((b) >= (B)->c))
@@ -114,6 +115,17 @@ bool bitvec_pop(bitvec_t *B, bool *x) {
   size_t b = i/ULL_BIT_SIZE, j = i%ULL_BIT_SIZE;
   if (!x) return true;
   *x = BIT_GET(B->d[b], j);
+  return true;
+}
+
+bool bitvec_cmp(bitvec_t *A, bitvec_t *B) {
+  size_t i, n = A->n;
+  size_t l = (n-1) / ULL_BIT_SIZE, r = n % ULL_BIT_SIZE;
+  if ((n == 0) || (n != B->n)) return false;
+  for (i = 0; i < l; ++i)
+    if (A->d[i] != B->d[i]) return false;
+  ull_t m = ONES_UP_TO(r);
+  if ((A->d[i] & m) != (B->d[i] & m)) return false;
   return true;
 }
 

@@ -52,6 +52,9 @@ bool bitvec_push(bitvec_t *B, bool x);
 /* Removes and retrieves the last element of bitvec_t B. */
 bool bitvec_pop(bitvec_t *B, bool *x);
 
+/* Compares the contents of bitvect_t *A against bitvec_t *B. */
+bool bitvec_cmp(bitvec_t *A, bitvec_t *B);
+
 /* Prints a representation of bitvec_t B. */
 void bitvec_print(bitvec_t *B);
 

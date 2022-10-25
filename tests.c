@@ -89,17 +89,22 @@ bool test_bitvec(void) {
     C = bitvec_copy(&A, C);
     assert(C);
     assert(!cmp_bitvec(&A, C));
+    assert(bitvec_cmp(&A, C));
     assert(bitvec_copy(B, &D));
     assert(!cmp_bitvec(B, &D));
+    assert(bitvec_cmp(B, &D));
     assert(bitvec_copy(B, C));
     assert(!cmp_bitvec(B, C));
+    assert(bitvec_cmp(B, C));
 
     for (j = 0; j < 10000; ++j) {
       assert(bitvec_incr(C));
       assert(cmp_bitvec(C, &D) > 0);
       assert(cmp_bitvec(&D, C) < 0);
+      assert(!bitvec_cmp(C, &D));
       assert(bitvec_incr(&D));
       assert(!cmp_bitvec(C, &D));
+      assert(bitvec_cmp(C, &D));
       assert(bitvec_copy(C, &D));
     }
     putchar(',');
@@ -126,9 +131,10 @@ bool test_bitvec(void) {
   assert(bitvec_one(&A));
   A.d[15] = 0;
   /* putchar('\n'); */
-  for (i = 0; i < 10; ++i) {
+  for (i = 0; i < 100; ++i) {
     /* bitvec_print(&A); */
     bitvec_incr(&A);
+    putchar('~');
   }
   bitvec_free_contents(&A);
 
