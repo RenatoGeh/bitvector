@@ -128,11 +128,10 @@ bool test_bitvec(void) {
   }
 
   assert(bitvec_init(&A, 1000));
-  assert(bitvec_one(&A));
-  A.d[15] = 0;
+  assert(bitvec_onen(&A, 5));
   /* putchar('\n'); */
   for (i = 0; i < 100; ++i) {
-    /* bitvec_print(&A); */
+    /*bitvec_print(&A);*/
     bitvec_incr(&A);
     putchar('~');
   }

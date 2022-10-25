@@ -29,6 +29,12 @@ bitvec_t* bitvec_zero(bitvec_t *B);
 bitvec_t* bitvec_one(bitvec_t *B);
 /* Fills the number of elements up to capacity. */
 bitvec_t* bitvec_fill(bitvec_t *B);
+/* Sets all elements (up to n) to zero. */
+bitvec_t* bitvec_filln(bitvec_t *B, size_t n);
+/* Sets all elements (up to n) to one. */
+bitvec_t* bitvec_zeron(bitvec_t *B, size_t n);
+/* Fills the number of elements up to n. */
+bitvec_t* bitvec_onen(bitvec_t *B, size_t n);
 
 /* Frees the contents of a bitvec_t. */
 void bitvec_free_contents(bitvec_t *B);

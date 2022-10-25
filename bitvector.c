@@ -42,6 +42,17 @@ bitvec_t* bitvec_create(size_t n) {
 bitvec_t* bitvec_zero(bitvec_t *B) { bitvec_fill(B); memset(B->d, 0, B->c*sizeof(ull_t)); return B; }
 bitvec_t* bitvec_one(bitvec_t *B) { bitvec_fill(B); memset(B->d, -1, B->c*sizeof(ull_t)); return B; }
 bitvec_t* bitvec_fill(bitvec_t *B) { B->n = B->c*ULL_BIT_SIZE; return B; }
+bitvec_t* bitvec_filln(bitvec_t *B, size_t n) { B->n = n; return B; }
+bitvec_t* bitvec_zeron(bitvec_t *B, size_t n) {
+  bitvec_filln(B, n);
+  memset(B->d, 0, ((B->n/ULL_BIT_SIZE) + 1)*sizeof(ull_t));
+  return B;
+}
+bitvec_t* bitvec_onen(bitvec_t *B, size_t n) {
+  bitvec_filln(B, n);
+  memset(B->d, -1, ((B->n/ULL_BIT_SIZE) + 1)*sizeof(ull_t));
+  return B;
+}
 
 bitvec_t* bitvec_copy(bitvec_t *src, bitvec_t *dst) {
   size_t i;
@@ -121,7 +132,7 @@ bool bitvec_pop(bitvec_t *B, bool *x) {
 bool bitvec_cmp(bitvec_t *A, bitvec_t *B) {
   size_t i, n = A->n;
   size_t l = n / ULL_BIT_SIZE, r = n % ULL_BIT_SIZE;
-  if ((n == 0) || (n != B->n)) return false;
+  if (n != B->n) return false;
   for (i = 0; i < l; ++i)
     if (A->d[i] != B->d[i]) return false;
   if (r == 0) return true;
@@ -146,12 +157,11 @@ void bitvec_print(bitvec_t *B) {
 bool bitvec_incr(const bitvec_t *B) {
   size_t i, n = B->n / ULL_BIT_SIZE, r = B->n % ULL_BIT_SIZE;
   bool carry = true;
-  if (n == 0) return false;
   for (i = 0; carry && i < n; ++i) {
     carry = B->d[i] == ULLONG_MAX;
     ++B->d[i];
   }
-  if (r == 0) return !carry;
+  if (!carry || (r == 0)) return !carry;
   carry = B->d[i] == ONES_UP_TO(r);
   B->d[i] = carry*0 + (!carry)*(B->d[i]+1); /* if carry, then 0; otherwise increment. */
   return !carry;
