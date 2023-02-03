@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include <locale.h>
+#include <wchar.h>
 
 #include "bitvector.h"
 
@@ -146,12 +148,23 @@ void print_ull(unsigned long long int d, size_t k) {
   putchar('|');
   for (i = 0; i < k; ++i) putchar('0' + ((d >> i) & 1ULL));
 }
+void wprint_ull(unsigned long long int d, size_t k) {
+  size_t i;
+  putwchar('|');
+  for (i = 0; i < k; ++i) putwchar('0' + ((d >> i) & 1ULL));
+}
 
 void bitvec_print(bitvec_t *B) {
   size_t i;
   printf("<[");
   for (i = 0; i < B->n; i += ULL_BIT_SIZE) print_ull(B->d[i/ULL_BIT_SIZE], (i+ULL_BIT_SIZE > B->n)*(B->n - i) + (i+ULL_BIT_SIZE <= B->n)*ULL_BIT_SIZE);
   printf("|],\nn = %lu, c = %lu, c*%lu = %lu>\n", B->n, B->c, ULL_BIT_SIZE, B->c*ULL_BIT_SIZE);
+}
+void bitvec_wprint(bitvec_t *B) {
+  size_t i;
+  wprintf(L"<[");
+  for (i = 0; i < B->n; i += ULL_BIT_SIZE) wprint_ull(B->d[i/ULL_BIT_SIZE], (i+ULL_BIT_SIZE > B->n)*(B->n - i) + (i+ULL_BIT_SIZE <= B->n)*ULL_BIT_SIZE);
+  wprintf(L"|],\nn = %lu, c = %lu, c*%lu = %lu>\n", B->n, B->c, ULL_BIT_SIZE, B->c*ULL_BIT_SIZE);
 }
 
 bool bitvec_incr(const bitvec_t *B) {

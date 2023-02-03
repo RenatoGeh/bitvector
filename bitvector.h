@@ -63,6 +63,8 @@ bool bitvec_cmp(bitvec_t *A, bitvec_t *B);
 
 /* Prints a representation of bitvec_t B. */
 void bitvec_print(bitvec_t *B);
+/* Prints a representation of bitvec_t B as a wide char. */
+void bitvec_wprint(bitvec_t *B);
 
 /* Interprets bitvec_t* B as one long number, incrementing B in a segmented little-endian fashion.
  * Returns false on overflow. */
