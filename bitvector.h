@@ -70,6 +70,11 @@ void bitvec_wprint(bitvec_t *B);
  * Returns false on overflow. */
 bool bitvec_incr(const bitvec_t *B);
 
+/* Number of true's up to index i. */
+int bitvec_sum_up_to(bitvec_t *B, size_t i);
+/* Number of true's (population count). */
+int bitvec_sum(bitvec_t *B);
+
 #ifdef __cplusplus
 }
 #endif

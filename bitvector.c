@@ -179,3 +179,40 @@ bool bitvec_incr(const bitvec_t *B) {
   B->d[i] = carry*0 + (!carry)*(B->d[i]+1); /* if carry, then 0; otherwise increment. */
   return !carry;
 }
+
+const ull_t _M1  = 0x5555555555555555; // 0101...
+const ull_t _M2  = 0x3333333333333333; // 00110011..
+const ull_t _M4  = 0x0f0f0f0f0f0f0f0f; //  4 zeros,  4 ones ...
+const ull_t _M8  = 0x00ff00ff00ff00ff; //  8 zeros,  8 ones ...
+const ull_t _M16 = 0x0000ffff0000ffff; // 16 zeros, 16 ones ...
+const ull_t _M32 = 0x00000000ffffffff; // 32 zeros, 32 ones
+const ull_t _H01 = 0x0101010101010101; // the sum of 256 to the power of 0,1,2,3...
+
+int popcount64(ull_t x) {
+  x -= (x >> 1) & _M1;
+  x = (x & _M2) + ((x >> 2) & _M2);
+  x = (x + (x >> 4)) & _M4;
+  return (x * _H01) >> 56;
+}
+
+int bitvec_sum_up_to(bitvec_t *B, size_t i) {
+  size_t b = i / ULL_BIT_SIZE, r = (i % ULL_BIT_SIZE) + 1;
+  int s = 0;
+  if (b) {
+    for (size_t j = 0; j < b; ++j) {
+#ifdef __GNUC__
+      s += __builtin_popcountll(B->d[j]);
+#else
+      s += popcount64(B->d[j]);
+#endif
+    }
+  }
+#ifdef __GNUC__
+  s += __builtin_popcountll(B->d[b] & ONES_UP_TO(r));
+#else
+  s += popcount64(B->d[b] & ONES_UP_TO(r));
+#endif
+  return s;
+}
+
+int bitvec_sum(bitvec_t *B) { return bitvec_sum_up_to(B, B->n-1); }

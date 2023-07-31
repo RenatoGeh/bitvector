@@ -17,6 +17,30 @@ int cmp_bitvec(bitvec_t *A, bitvec_t *B) {
   return 0;
 }
 
+
+bool test_popcount() {
+  bitvec_t A = {0};
+  int N[7] = {10412, 51, 3, 40124, 59120, 110294, 12391}, i;
+
+  for (i = 0; i < 7; ++i) {
+    int j, k = 0, n = N[i];
+    assert(bitvec_init(&A, n));
+    bitvec_one(&A);
+    for (j = 0; j < n; ++j) {
+      bool v = rand() % 2;
+      k += v;
+      bitvec_SET(&A, j, v);
+      assert(k == bitvec_sum_up_to(&A, j));
+    }
+    A.n = n;
+    assert(k == bitvec_sum(&A));
+    bitvec_free_contents(&A);
+    putchar('%');
+  }
+
+  return true;
+}
+
 bool test_bitvec(void) {
   bitvec_t A = {0}, *B = NULL, *C = NULL, D = {0};
   bool A_t[TEST_LEN] = {0}, B_t[TEST_LEN] = {0};
@@ -136,6 +160,8 @@ bool test_bitvec(void) {
     putchar('~');
   }
   bitvec_free_contents(&A);
+
+  if (!test_popcount()) return false;
 
   return true;
 }
