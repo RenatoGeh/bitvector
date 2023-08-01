@@ -195,6 +195,12 @@ int popcount64(ull_t x) {
   return (x * _H01) >> 56;
 }
 
+int naive_popcount(ull_t x) {
+  int s = 0;
+  for (size_t i = 0; i < 64; ++i) s += BIT_GET(x, i);
+  return s;
+}
+
 int bitvec_sum_up_to(bitvec_t *B, size_t i) {
   size_t b = i / ULL_BIT_SIZE, r = (i % ULL_BIT_SIZE) + 1;
   int s = 0;
@@ -202,6 +208,8 @@ int bitvec_sum_up_to(bitvec_t *B, size_t i) {
     for (size_t j = 0; j < b; ++j) {
 #ifdef __GNUC__
       s += __builtin_popcountll(B->d[j]);
+#elif __NAIVE__
+      s += naive_popcount(B->d[j]);
 #else
       s += popcount64(B->d[j]);
 #endif
@@ -209,6 +217,8 @@ int bitvec_sum_up_to(bitvec_t *B, size_t i) {
   }
 #ifdef __GNUC__
   s += __builtin_popcountll(B->d[b] & ONES_UP_TO(r));
+#elif __NAIVE__
+  s += naive_popcount(B->d[b] & ONES_UP_TO(r));
 #else
   s += popcount64(B->d[b] & ONES_UP_TO(r));
 #endif

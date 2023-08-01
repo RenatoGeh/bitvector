@@ -20,9 +20,9 @@ int cmp_bitvec(bitvec_t *A, bitvec_t *B) {
 
 bool test_popcount() {
   bitvec_t A = {0};
-  int N[7] = {10412, 51, 3, 40124, 59120, 110294, 12391}, i;
+  int N[10] = {10412, 51, 3, 40124, 59120, 110294, 12391, 321123, 51402, 72293}, i;
 
-  for (i = 0; i < 7; ++i) {
+  for (i = 0; i < 10; ++i) {
     int j, k = 0, n = N[i];
     assert(bitvec_init(&A, n));
     bitvec_one(&A);
